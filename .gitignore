@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/client/node_modules
 /.pnp
 .pnp.js
 
@@ -18,6 +19,8 @@
 .env.test.local
 .env.production.local
 .env
+package-lock.json
+/client/package-lock.json
 
 npm-debug.log*
 yarn-debug.log*
