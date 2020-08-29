@@ -43,6 +43,41 @@ export const createUserProfileDocument = async(userAuth, additionalData) => {
 
 firebase.initializeApp(config);
 
+export const addCartToFireStore = async (userAuth, cartItems)=>{
+    if(!userAuth) return;
+    const userRef = firestore.doc(`carts/${userAuth.uid}`)
+
+    cartItems = {...{userId:userAuth.uid},...{cartItems:cartItems}}
+    const snapShot = await userRef.get()
+    if(!snapShot.exists){
+        
+        try{
+            await userRef.set(cartItems)
+
+        } catch(error){
+            console.log('error saving cart', error.message)
+        }
+    }else{
+        try{
+            await userRef.set(cartItems)
+
+        } catch(error){
+            console.log('error updating cart', error.message)
+        }
+    }
+}
+
+export const loadCartFromFireStore= async(userAuth) =>{
+    const cartsRef = firestore.collection('carts');
+    const query = cartsRef.where("userId", "==", userAuth.uid);
+    const snapshot = await query.get()
+    const cartItems = snapshot.docs.map(doc =>{
+        return doc.data()['cartItems']
+    })
+    return cartItems
+    
+}
+
 export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) =>{
     const collectionRef = firestore.collection(collectionKey);
     

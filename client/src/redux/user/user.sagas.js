@@ -15,7 +15,8 @@ import {
   auth,
   googleProvider,
   createUserProfileDocument,
-  getCurrentUser
+  getCurrentUser,
+  addCartToFireStore
 } from '../../firebase/firebase.utils';
 
 export function* getSnapshotFromUserAuth(userAuth, additionalData) {
@@ -27,6 +28,12 @@ export function* getSnapshotFromUserAuth(userAuth, additionalData) {
     );
     const userSnapshot = yield userRef.get();
     yield put(signInSuccess({ id: userSnapshot.id, ...userSnapshot.data() }));
+    
+
+
+
+
+
   } catch (error) {
     yield put(signInFailure(error));
   }
@@ -50,18 +57,38 @@ export function* signInWithEmail({ payload: { email, password } }) {
   }
 }
 
+
 export function* isUserAuthenticated() {
   try {
     const userAuth = yield getCurrentUser();
     if (!userAuth) return;
     yield getSnapshotFromUserAuth(userAuth);
+
+
   } catch (error) {
     yield put(signInFailure(error));
   }
 }
 
-export function* signOut() {
+export function* saveCart(cartItems){
+  console.log('----testing--')
+  try{
+    const userAuth = yield getCurrentUser();
+  
+
+    if (!userAuth) return;
+    yield call(addCartToFireStore,userAuth,cartItems)
+
+  }catch(error){
+    console.log('error saving cart')
+    console.log(error)
+  }
+}
+
+
+export function* signOut({payload}) {
   try {
+    yield saveCart(payload)
     yield auth.signOut();
     yield put(signOutSuccess());
   } catch (error) {

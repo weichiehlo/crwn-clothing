@@ -35,6 +35,14 @@ const cartReducer = (state = INITIAL_STATE, action) => {
         ...state,
         cartItems: []
       };
+    case CartActionTypes.LOAD_CART:
+      return state.cartItems.length>0? 
+        state
+      :{
+        ...state,
+        cartItems: action.payload
+      };
+
     default:
       return state;
   }
