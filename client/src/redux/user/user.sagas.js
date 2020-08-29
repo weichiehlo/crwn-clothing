@@ -71,7 +71,6 @@ export function* isUserAuthenticated() {
 }
 
 export function* saveCart(cartItems){
-  console.log('----testing--')
   try{
     const userAuth = yield getCurrentUser();
   
